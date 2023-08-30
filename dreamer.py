@@ -39,18 +39,18 @@ def generate_llama2_response(prompt_input):
     default_input = "You are a dream analysis assistant. Analyze the following dream:"
 
     # Concatenate the default input and user's prompt
-    input_text = default_input + "\n\n" + prompt_input
+    # input_text = default_input + "\n\n" + prompt_input
 
     # Construct the string dialogue based on user and assistant messages
     string_dialogue = "You are a helpful assistant. You do not respond as 'User' or pretend to be 'User'. You only respond once as 'Assistant'."
     for dict_message in st.session_state.messages:
         if dict_message["role"] == "user":
-            string_dialogue += "User: " + dict_message["content"] + "\n\n"
+            string_dialogue += "User: " + default_input + dict_message["content"] + "\n\n"
         else:
             string_dialogue += "Assistant: " + dict_message["content"] + "\n\n"
 
     # Construct the complete prompt including the string dialogue and input
-    complete_prompt = f"{string_dialogue} {input_text} Assistant: "
+    complete_prompt = f"{string_dialogue} {prompt_input} Assistant: "
 
     # Call the AI model using replicate.run() or any other method
     output = replicate.run(
@@ -64,7 +64,6 @@ def generate_llama2_response(prompt_input):
     # Return the generated response
     # return generated_response
     return output
-
 
 # User-provided prompt
 if prompt := st.chat_input(disabled=not replicate_api):

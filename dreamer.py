@@ -43,7 +43,7 @@ def generate_llama2_response(prompt_input):
 
     # Construct the string dialogue based on user and assistant messages
     string_dialogue = "You are a helpful assistant. You do not respond as 'User' or pretend to be 'User'. You only respond once as 'Assistant'."
-    for dict_message in st.session_state.dream_analysis:
+    for dict_message in st.session_state.messages:
         if dict_message["role"] == "user":
             string_dialogue += "User: " + dict_message["content"] + "\n\n"
         else:

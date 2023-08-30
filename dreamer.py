@@ -53,16 +53,17 @@ def generate_llama2_response(prompt_input):
     complete_prompt = f"{string_dialogue} {input_text} Assistant: "
 
     # Call the AI model using replicate.run() or any other method
-    response = replicate.run(
+    output = replicate.run(
         'a16z-infra/llama13b-v2-chat:df7690f1994d94e96ad9d568eac121aecf50684a0b0963b25a41cc40061269e5', 
         input={"prompt": complete_prompt, "temperature": 0.1, "top_p": 0.9, "max_length": 512, "repetition_penalty": 1}
     )
 
-    # Extract the generated response from the AI's reply
-    generated_response = response[0]['generated_text']
+    # # Extract the generated response from the AI's reply
+    # generated_response = response[0]['generated_text']
 
     # Return the generated response
-    return generated_response
+    # return generated_response
+    return output
 
 
 # User-provided prompt

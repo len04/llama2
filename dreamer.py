@@ -34,18 +34,36 @@ def clear_chat_history():
 st.sidebar.button('Clear Dream History', on_click=clear_chat_history)
 
 # Function for generating LLaMA2 response
-# Refactored from https://github.com/a16z-infra/llama2-chatbot
 def generate_llama2_response(prompt_input):
+    # Define a default input to be included before the user's prompt
+    default_input = "You are a dream analysis assistant. Analyze the following dream:"
+
+    # Concatenate the default input and user's prompt
+    input_text = default_input + "\n\n" + prompt_input
+
+    # Construct the string dialogue based on user and assistant messages
     string_dialogue = "You are a helpful assistant. You do not respond as 'User' or pretend to be 'User'. You only respond once as 'Assistant'."
-    for dict_message in st.session_state.messages:
+    for dict_message in st.session_state.dream_analysis:
         if dict_message["role"] == "user":
             string_dialogue += "User: " + dict_message["content"] + "\n\n"
         else:
             string_dialogue += "Assistant: " + dict_message["content"] + "\n\n"
-    output = replicate.run('a16z-infra/llama13b-v2-chat:df7690f1994d94e96ad9d568eac121aecf50684a0b0963b25a41cc40061269e5', 
-                           input={"prompt": f"{string_dialogue} {prompt_input} Assistant: ",
-                                  "temperature":0.1, "top_p":0.9, "max_length":512, "repetition_penalty":1})
-    return output
+
+    # Construct the complete prompt including the string dialogue and input
+    complete_prompt = f"{string_dialogue} {input_text} Assistant: "
+
+    # Call the AI model using replicate.run() or any other method
+    response = replicate.run(
+        'a16z-infra/llama13b-v2-chat:df7690f1994d94e96ad9d568eac121aecf50684a0b0963b25a41cc40061269e5', 
+        input={"prompt": complete_prompt, "temperature": 0.1, "top_p": 0.9, "max_length": 512, "repetition_penalty": 1}
+    )
+
+    # Extract the generated response from the AI's reply
+    generated_response = response[0]['generated_text']
+
+    # Return the generated response
+    return generated_response
+
 
 # User-provided prompt
 if prompt := st.chat_input(disabled=not replicate_api):

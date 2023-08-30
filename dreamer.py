@@ -49,21 +49,17 @@ def generate_llama2_response(prompt_input):
         else:
             string_dialogue += "Assistant: " + dict_message["content"] + "\n\n"
 
-    # Construct the complete prompt including the string dialogue and input
-    complete_prompt = f"{string_dialogue} {prompt_input} Assistant: "
-
     # Call the AI model using replicate.run() or any other method
-    output = replicate.run(
-        'a16z-infra/llama13b-v2-chat:df7690f1994d94e96ad9d568eac121aecf50684a0b0963b25a41cc40061269e5', 
-        input={"prompt": complete_prompt, "temperature": 0.1, "top_p": 0.9, "max_length": 512, "repetition_penalty": 1}
-    )
+    output = replicate.run('a16z-infra/llama13b-v2-chat:df7690f1994d94e96ad9d568eac121aecf50684a0b0963b25a41cc40061269e5', 
+                           input={"prompt": f"{string_dialogue} {prompt_input} Assistant: ",
+                                  "temperature":0.1, "top_p":0.9, "max_length":512, "repetition_penalty":1})
+    return output
 
     # # Extract the generated response from the AI's reply
     # generated_response = response[0]['generated_text']
 
     # Return the generated response
     # return generated_response
-    return output
 
 # User-provided prompt
 if prompt := st.chat_input(disabled=not replicate_api):
